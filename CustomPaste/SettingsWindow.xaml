@@ -208,7 +208,7 @@
                                         <ui:ToggleSwitch x:Name="AIStreamToggle" IsOn="{Binding AIStreamEnabled, Mode=TwoWay}" OffContent="关闭" OnContent="开启" />
                                     </ui:SettingsCard>
                                     <ui:SettingsCard Header="API 地址" Description="支持 Base URL 或完整 /chat/completions 地址；加密保存。">
-                                        <PasswordBox x:Name="AIEndpointBox" Width="280" MaxLength="4096" PasswordChanged="AIEndpoint_PasswordChanged" AutomationProperties.Name="AI API 地址" ToolTip="默认 https://api.openai.com/v1/chat/completions；也可填兼容服务的 /v1 Base URL。" />
+                                        <TextBox x:Name="AIEndpointBox" Width="280" MaxLength="4096" TextChanged="AIEndpoint_PasswordChanged" AutomationProperties.Name="AI API 地址" ToolTip="默认 https://api.openai.com/v1/chat/completions；也可填兼容服务的 /v1 Base URL。" />
                                     </ui:SettingsCard>
                                     <ui:SettingsCard Header="模型 ID" Description="填写服务商提供的准确 ID；不会自动替换模型。">
                                         <TextBox x:Name="AIModelBox" Width="280" MaxLength="200" Text="{Binding AIModel, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="AI 模型 ID" />

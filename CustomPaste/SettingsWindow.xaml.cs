@@ -169,7 +169,7 @@ public partial class SettingsWindow : Window
     {
         if (_aiEndpointDirty)
         {
-            var endpoint = AIEndpointBox.Password.Trim();
+            var endpoint = AIEndpointBox.Text.Trim();
             if (endpoint.Length != 0) AITranslationProtocol.ParseEndpoint(endpoint);
             _draft.ProtectedAIEndpoint = endpoint.Length == 0 ? "" : SecretProtector.Protect(endpoint);
             _aiEndpointDirty = false;
@@ -201,10 +201,10 @@ public partial class SettingsWindow : Window
         try
         {
             var endpoint = SecretProtector.Unprotect(_draft.ProtectedAIEndpoint);
-            AIEndpointBox.Password = string.IsNullOrEmpty(endpoint) ? AITranslationProtocol.DefaultEndpoint : endpoint;
+            AIEndpointBox.Text = string.IsNullOrEmpty(endpoint) ? AITranslationProtocol.DefaultEndpoint : endpoint;
         }
         catch (Exception ex) when (ex is System.Security.Cryptography.CryptographicException or FormatException)
-        { AIEndpointBox.Password = ""; ShowFeedback("AI 地址无法解密，请重新填写；未修改前不会覆盖旧配置。"); }
+        { AIEndpointBox.Text = ""; ShowFeedback("AI 地址无法解密，请重新填写；未修改前不会覆盖旧配置。"); }
         _aiEndpointDirty = false;
         _endpointDirty = false;
         _keyDirty = false;
