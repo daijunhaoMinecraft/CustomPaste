@@ -1,28 +1,102 @@
 # CustomPaste
 
-Windows 自定义粘贴工具，使用 .NET 8、WPF 和 iNKORE.UI.WPF.Modern 0.10.2.1。
+[![License: Non-Commercial & Share-Alike](https://img.shields.io/badge/License-Non--Commercial%20%26%20Share--Alike-blue)](LICENSE)
+
+**复制 → 转换 → 粘贴，把重复的文本处理交给一个快捷键。**
+
+CustomPaste 是 Windows 托盘常驻的自定义粘贴工具：用 **Ctrl + Shift + V** 执行纯文本粘贴、翻译后粘贴、模拟逐字输入，或 AI 实时翻译输入。无需翻译时，不必配置任何 API。
+
+基于 .NET 8、WPF 和 iNKORE.UI.WPF.Modern 0.10.2.1。
+
+[界面预览](#界面预览) · [快速开始](#快速开始) · [选择工作流](#选择工作流) · [翻译服务配置](#翻译服务配置) · [常见问题](#常见问题) · [安全与兼容性](#安全与兼容性) · [开发与验证](#开发与验证)
+
+## 界面预览
+
+### 自定义粘贴
+
+在首页组合「先翻译，再粘贴」与「流式输入」，调整输入间隔和剪贴板恢复选项。
+
+![CustomPaste 首页：粘贴工作流、输入间隔与剪贴板安全设置](docs/images/home-light.png)
+
+<details>
+<summary>查看 AI 翻译配置与独立快捷键</summary>
+
+### AI 翻译配置
+
+配置兼容接口、模型和额外翻译要求；需要边生成边输入时，开启「Stream · 实时翻译输入」。截图中的模型与密钥留空，使用前需填写自己的配置。
+
+![AI 翻译设置：实时输入开关、API 地址、模型 ID 与额外翻译要求](docs/images/ai-translation-light.png)
+
+### 独立快捷键
+
+不同动作可分别绑定，不必反复切换首页开关；默认只绑定自定义粘贴。
+
+![快捷键设置：自定义粘贴、翻译粘贴、逐字输入、纯文本粘贴和取消任务](docs/images/hotkeys-light.png)
+
+</details>
+
+> 图片由项目自身的 WPF 离屏渲染工具生成，使用隔离测试数据，不包含真实密钥或剪贴板内容。示例展示浅色、纯色背景；实际系统材质和 DPI 效果以运行环境为准。
 
 ## 功能
 
 - **自定义粘贴**：默认全局快捷键 **Ctrl + Shift + V**。可选择先翻译、逐字输入，或组合两者。两个开关都关闭时执行纯文本粘贴。
 - **独立快捷键**：仅翻译粘贴、仅流式输入、纯文本粘贴、取消当前任务；默认不绑定。点击快捷键框录入，Backspace / Delete 清除。保存时检查重复和系统占用。
-- **翻译**：DeepL API Free / Pro、Microsoft Translator Text API v3，以及可填写完整 URL 的 DeepLX。支持自动识别源语言及常用目标语言；每个服务分别保存 API Key。内置测试不会读取剪贴板。
+- **翻译**：DeepL API Free / Pro、Microsoft Translator Text API v3，可填写完整 URL 的 DeepLX，以及 OpenAI 兼容 AI 翻译（支持实时输入）。支持自动识别源语言及常用目标语言；每个服务分别保存 API Key。内置测试不会读取剪贴板。
 - **历史**：默认开启，仅记录本应用已发送的最终文本；搜索、查看、复制、删除、清空，可限制 1–1000 条。关闭并保存时清空已有记录。
 - **日志**：级别和关键字筛选，记录任务开始 / 结束 / 失败 / 取消、耗时、字符数、设置变更。界面展示本次运行最近 500 条，JSONL 文件保留 7 天，每天轮转至约 4 MB。**不记录文本正文、API Key 或服务商响应体**。
-- **托盘运行**：关闭设置窗口不退出，双击托盘重新打开；托盘菜单可以查看历史、日志或取消任务。支持单实例及 --background 启动参数。
+- **托盘运行**：关闭设置窗口不退出，双击托盘重新打开；托盘菜单可以查看历史、日志或取消任务。支持单实例及 `--background` 启动参数。
 - **外观**：浅色、深色、跟随系统、强调色、Mica / Tabbed / 纯色；设置由 SettingsCard 和 SettingsExpander.Items 组织，并自动保存。材质在不受支持的系统上由 UI 库回退。
 
 ## 快速开始
 
-1. 构建并运行（需要 .NET 8 或更新 SDK；运行需要 .NET 8 Desktop Runtime）：
+### 1. 从源码运行
 
-   dotnet build CustomPaste.sln -c Release
-   dotnet run --project CustomPaste/CustomPaste.csproj
+需要 Windows 和 **.NET 8 或更新 SDK**；运行编译后的应用需要 **.NET 8 Desktop Runtime**，仅安装普通 .NET Runtime 不够。可从 [.NET 8 下载页](https://dotnet.microsoft.com/zh-cn/download/dotnet/8.0) 获取。
 
+在仓库根目录打开 PowerShell：
+
+```powershell
+dotnet build CustomPaste.sln -c Release
+dotnet run --project CustomPaste/CustomPaste.csproj -c Release
+```
+
+只启动托盘、不显示设置窗口：
+
+```powershell
+dotnet run --project CustomPaste/CustomPaste.csproj -c Release -- --background
+```
+
+### 2. 先试一次纯文本粘贴
+
+保留首页两个工作流开关为关闭状态，复制一小段普通文字，切换到记事本输入区，按 **Ctrl + Shift + V** 并松开按键，即可去除富文本格式后粘贴。默认快捷键如被其他程序占用，请在「快捷键」页更换组合键。
+
+### 3. 按需启用翻译或逐字输入
+
+1. 不需要翻译时，可直接开启首页「流式输入」，按设定间隔逐字输入原文。
 2. 如需翻译，进入「翻译服务」，选择服务并填写自己的 API Key（DeepLX 填写完整接口地址，Bearer Token 可选），再选择目标语言。
 3. 可点击「测试翻译」验证当前表单配置（会发送示例文本并消耗服务额度），配置会在输入停顿约 0.5 秒后自动保存。
 4. 在首页启用需要的工作流，等待自动保存完成。复制文本，切换到目标输入框，按快捷键后松开按键。
 5. **Esc** 可取消翻译 / 输入；也可在「快捷键 → 取消当前任务」额外绑定全局组合键（默认留空）。全局取消键还能取消设置页中的翻译测试，忙碌时优先响应；已发送部分不会撤回。粘贴期间修改设置会延后保存，任务结束后自动生效。
+
+## 选择工作流
+
+下面的组合适用于默认 **Ctrl + Shift + V**「自定义粘贴」动作：
+
+| 想要的效果 | 首页「先翻译，再粘贴」 | 首页「流式输入」 | 补充设置与行为 |
+| --- | --- | --- | --- |
+| 去除格式，粘贴原文 | 关 | 关 | 无需翻译服务 |
+| 模拟逐字输入原文 | 关 | 开 | 使用首页的输入间隔 |
+| 翻译后一次性粘贴 | 开 | 关 | 先配置翻译服务；AI Stream 关闭 |
+| 翻译完成后逐字输入 | 开 | 开 | 使用首页的输入间隔；AI Stream 关闭 |
+| AI 边翻译边输入 | 开 | 任意 | 选择 AI 服务并开启 Stream；不额外等待逐字间隔 |
+
+**普通「流式输入」是逐字模拟键盘输入，不是网络流式响应。** AI Stream 则在译文尚未完整生成时就开始输入，后续失败或取消不会撤回已发送内容。
+
+「快捷键」页的独立动作不依赖首页组合：仅流式输入始终输入原文，纯文本粘贴始终直接粘贴原文，仅翻译粘贴使用当前翻译服务（AI Stream 开启时会实时输入）。
+
+> 例如：复制一段外语说明，配置目标语言为简体中文后开启翻译，即可在目标输入框输出译文。翻译会将文本发送到你配置的服务，请勿用敏感内容试运行。
+
+## 翻译服务配置
 
 ### AI 翻译（OpenAI 兼容）
 
@@ -64,6 +138,28 @@ DeepL 中文源语言归一化为 ZH，目标简体 / 繁体使用 ZH-HANS / ZH-
 
 网络调用直接发往服务商，禁用重定向，不自动重试计费请求；普通翻译请求全生命周期超时 30 秒（AI 为 90 秒），响应大小上限 1 MiB，源文 / 译文均校验长度。官方服务没有 API Key，AI 缺少模型 / 远程服务密钥，或 DeepLX 没有完整地址时，不会发起请求或回退粘贴原文。
 
+## 常见问题
+
+### 关闭窗口后，为什么快捷键仍然有效？
+
+关闭设置窗口仅隐藏界面，程序继续驻留托盘。双击托盘图标重新打开设置；需要完全退出时，使用「退出应用」或托盘菜单中的退出项。
+
+### 按快捷键没有反应，应该检查哪里？
+
+先确认程序仍在运行、快捷键已成功保存且未被其他应用占用。复制非空文本，将焦点放在普通权限的记事本输入区，按下快捷键后松开修饰键；任务尚未结束时不会启动第二个任务。可在「运行日志」查看失败或取消原因。不要通过给应用提权来绕过目标程序的权限限制。
+
+### 为什么设置没有立即生效？
+
+编辑停顿约 0.5 秒后自动保存；无效配置不会覆盖已生效设置，任务进行中则延后保存。检查窗口底部状态，修正错误后等待自动保存，或点击「立即保存」重试。
+
+### 翻译失败会把原文粘贴出去吗？
+
+不会。缺少配置、网络错误或不完整响应都会停止任务。AI 实时模式可能已经输入部分译文，这些内容无法自动撤回，也不会作为成功历史保存。点击「测试翻译」会真实调用所配置的服务，并可能消耗额度。
+
+### 为什么历史里没有其他应用复制的内容？
+
+CustomPaste 不是全局剪贴板管理器，不会监听所有复制操作。历史默认只保存本工具成功完成任务后的最终文本；失败、取消或 AI 部分结果不计入成功历史。
+
 ## 安全与兼容性
 
 - **只处理文本**，不支持自动翻译图片或富文本。没有监听或轮询全局剪贴板。
@@ -86,25 +182,34 @@ DeepL 中文源语言归一化为 ZH，目标简体 / 繁体使用 ZH-HANS / ZH-
 
 ## 数据与隐私
 
-数据目录：%LOCALAPPDATA%\CustomPaste
+数据目录：`%LOCALAPPDATA%\CustomPaste`
 
-- settings.json：设置及经过 Windows DPAPI CurrentUser 加密的 API Key / DeepLX 完整地址。
-- history.dat：整份历史记录经过同一 Windows 账户的 DPAPI 加密；最终文本可能包含敏感信息，可关闭记录或清空。
-- Logs\YYYY-MM-DD.jsonl：不含正文和密钥的诊断日志；界面的「打开日志目录」可查看以往运行日志。
+- `settings.json`：设置及经过 Windows DPAPI CurrentUser 加密的 API Key / DeepLX 完整地址 / AI API 地址。
+- `history.dat`：整份历史记录经过同一 Windows 账户的 DPAPI 加密；最终文本可能包含敏感信息，可关闭记录或清空。
+- `Logs\YYYY-MM-DD.jsonl`：不含正文和密钥的诊断日志；界面的「打开日志目录」可查看以往运行日志。
 
 DPAPI 防止文件被直接当作明文读取，**不防御已经在同一 Windows 账户下运行的恶意程序**。复制到其他账户 / 系统后可能无法解密，需要重新输入密钥。损坏配置尽可能备份为 settings.json.invalid-*，然后使用默认值。退出会等待正在执行的任务结束并释放托盘和快捷键资源。
 
-## 验证
+## 开发与验证
 
 不依赖额外测试框架的离线回归测试（不会调用付费 API 或向真实桌面输入）：
 
-    dotnet run --project CustomPaste.Tests/CustomPaste.Tests.csproj
+```powershell
+dotnet build CustomPaste.sln -c Release
+dotnet run --project CustomPaste.Tests/CustomPaste.Tests.csproj -c Release
+```
+
+测试项目是自定义控制台断言程序，必须通过 `dotnet run` 执行；`dotnet test` 不能替代这些回归断言。
 
 覆盖：快捷键解析 / 规范化 / 去重、设置边界、DPAPI、原子保存、损坏恢复、历史裁剪 / 删除、日志落盘、DeepL / Microsoft 协议、HTTP 错误、无效响应、取消、长度限制，以及粘贴路由、组合模式、忙碌保护、失败不输入和关闭历史不写文件。
 
-WPF 离屏渲染与绑定诊断（生成六个页面及深色首页）：
+WPF 离屏渲染与绑定诊断（生成六个页面、DeepLX / AI 配置页及深色首页）：
 
-    dotnet run --project CustomPaste.Tests/CustomPaste.Tests.csproj -- --render-ui artifacts/ui
+```powershell
+dotnet run --project CustomPaste.Tests/CustomPaste.Tests.csproj -c Release -- --render-ui artifacts/ui
+```
+
+检查生成的 PNG 和 `artifacts/ui/binding-diagnostics.txt`（正常应为空）。README 图片保存在 `docs/images/`，更新界面后可从渲染产物中选取并替换同名图片；不要提交 `artifacts/ui/test-data/` 等临时测试数据。
 
 ### 上线前手动验收
 
@@ -134,3 +239,7 @@ WPF 离屏渲染与绑定诊断（生成六个页面及深色首页）：
 - [Microsoft Translator v3 Translate](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/translate)
 
 - [DeepLX `/translate` 文档](https://deeplx.owo.network/endpoints/free.html)
+
+## 许可证
+
+本项目采用自定义 **NON-COMMERCIAL & SHARE-ALIKE LICENSE**，并非 MIT、Apache 或标准 Creative Commons 许可证。使用、修改和分发前请阅读 [LICENSE](LICENSE)，具体授权条件以原文为准；请保留版权与许可证文本。
