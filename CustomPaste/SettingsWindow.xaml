@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="CustomPaste.SettingsWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern" FontSize="14" FontFamily="Segoe UI, Microsoft YaHei UI" Title="CustomPaste · 自定义粘贴" Width="1120" Height="790" MinWidth="920" MinHeight="640" ui:WindowHelper.UseModernWindowStyle="True" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,24,0,10" />
+        </Style>
+        <Style x:Key="Description" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="LineHeight" Value="21" />
+        </Style>
+        <Style TargetType="ui:SettingsCard">
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+        <Style x:Key="HotkeyBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Width" Value="180" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="ToolTip" Value="点击后按下快捷键；Backspace / Delete 清除；Tab 切换焦点" />
+            <EventSetter Event="PreviewKeyDown" Handler="HotkeyBox_PreviewKeyDown" />
+        </Style>
+        <Style x:Key="NavItem" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="Margin" Value="8,3" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Surface" CornerRadius="6" Padding="{TemplateBinding Padding}" Background="Transparent">
+                            <Grid>
+                                <Border x:Name="Indicator" Width="3" Height="18" HorizontalAlignment="Left" Margin="-10,0,0,0" CornerRadius="2" Background="#6174E9" Visibility="Collapsed" />
+                                <ContentPresenter />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Surface" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                                <Setter TargetName="Indicator" Property="Visibility" Value="Visible" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Surface" Property="BorderBrush" Value="#6174E9" />
+                                <Setter TargetName="Surface" Property="BorderThickness" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Margin="0,12,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="22,20,12,32">
+                <Border Background="#5267DF" CornerRadius="10" Width="38" Height="38">
+                    <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="19" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel Margin="12,0,0,0">
+                    <TextBlock Text="CustomPaste" FontSize="18" FontWeight="SemiBold" />
+                    <TextBlock Text="让每一次粘贴更合心意" FontSize="11" Style="{StaticResource Description}" />
+                </StackPanel>
+            </StackPanel>
+            <ListBox x:Name="Navigation" Grid.Row="1" BorderThickness="0" Background="Transparent" ItemContainerStyle="{StaticResource NavItem}" SelectionChanged="Navigation_SelectionChanged">
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,2,14,0" />
+                        <TextBlock Text="自定义粘贴" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,2,14,0" />
+                        <TextBlock Text="翻译服务" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,2,14,0" />
+                        <TextBlock Text="快捷键" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,2,14,0" />
+                        <TextBlock Text="粘贴历史" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,2,14,0" />
+                        <TextBlock Text="运行日志" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="" FontFamily="Segoe MDL2 Assets" Margin="0,2,14,0" />
+                        <TextBlock Text="外观与通用" />
+                    </StackPanel>
+                </ListBoxItem>
+            </ListBox>
+            <Border Grid.Row="2" Margin="16" Padding="14" CornerRadius="8" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="7" Height="7" Fill="#34A77B" Margin="0,0,8,0" />
+                        <TextBlock Text="托盘服务运行中" FontSize="12" />
+                    </StackPanel>
+                    <TextBlock Text="关闭窗口后仍可使用快捷键" FontSize="11" Margin="0,6,0,0" Style="{StaticResource Description}" />
+                    <Button Content="退出应用" Click="Exit_Click" HorizontalAlignment="Left" Margin="0,10,0,0" Padding="8,3" />
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Border Grid.Column="1" CornerRadius="12,0,0,0" Margin="0,12,0,0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1,1,0,0">
+            <Grid Margin="30,24,28,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Margin="0,0,0,22">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock x:Name="PageTitle" Text="自定义粘贴" FontSize="28" FontWeight="SemiBold" />
+                        <TextBlock x:Name="PageSubtitle" Text="一次快捷键，完成你的文本工作流。" Margin="0,6,12,0" Style="{StaticResource Description}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,5,0,0">
+                        <Button Content="重新载入" ToolTip="放弃尚未保存的无效更改，重新载入最近自动保存的配置" Click="Reload_Click" Margin="0,0,8,0" />
+                        <Button x:Name="SaveButton" Content="立即保存" Style="{DynamicResource AccentButtonStyle}" Click="Save_Click" />
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <ScrollViewer x:Name="HomePanel" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,8,20">
+                            <Border CornerRadius="12" Padding="24" Background="#303D82">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="复制。转换。粘贴。" FontSize="25" FontWeight="SemiBold" Foreground="White" />
+                                        <TextBlock Text="把重复的文本处理，交给一个快捷键。" Foreground="#D7DEFF" Margin="0,10,0,18" />
+                                        <TextBlock Text="在目标输入框中按下已保存的快捷键" Foreground="#D7DEFF" FontSize="12" />
+                                        <TextBlock x:Name="ActiveHotkey" Text="Ctrl + Shift + V" FontSize="19" FontWeight="SemiBold" Foreground="White" Margin="0,5,0,0" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="" FontFamily="Segoe MDL2 Assets" FontSize="65" Foreground="#A9B8FF" VerticalAlignment="Center" Margin="20,0,8,0" />
+                                </Grid>
+                            </Border>
+                            <TextBlock Text="粘贴工作流" Style="{StaticResource SectionTitle}" />
+                            <ui:SettingsCard Header="先翻译，再粘贴" Description="将剪贴板文本发送至所选翻译服务，再输出译文。">
+                                <ui:ToggleSwitch IsOn="{Binding TranslateOnPaste, Mode=TwoWay}" OffContent="关闭" OnContent="开启" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="流式输入" Description="以逐字输入代替 Ctrl + V；可与翻译组合。">
+                                <ui:ToggleSwitch IsOn="{Binding StreamOnPaste, Mode=TwoWay}" OffContent="关闭" OnContent="开启" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="输入间隔" Description="每个文本元素之间的等待时间，单位毫秒。">
+                                <TextBox Width="100" Text="{Binding CharacterDelayMs, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" AutomationProperties.Name="输入间隔（毫秒）" />
+                            </ui:SettingsCard>
+                            <ui:SettingsExpander Header="剪贴板与输入安全" Description="恢复原内容、控制长度以及保护目标窗口。" Margin="0,0,0,5">
+                                <ui:SettingsExpander.Items>
+                                    <ui:SettingsCard Header="恢复原剪贴板" Description="粘贴后恢复；期间若有新的复制操作，不覆盖新内容。">
+                                        <ui:ToggleSwitch IsOn="{Binding RestoreClipboard, Mode=TwoWay}" />
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="恢复延迟（毫秒）" Description="慢速目标应用可适当调大，避免过早恢复。">
+                                        <TextBox Width="100" Text="{Binding ClipboardRestoreDelayMs, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" AutomationProperties.Name="恢复延迟" />
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="单次文本上限" Description="源文本与译文均受此限制，最多 30000 字符。">
+                                        <TextBox Width="100" Text="{Binding MaxTextLength, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" AutomationProperties.Name="单次文本上限" />
+                                    </ui:SettingsCard>
+                                </ui:SettingsExpander.Items>
+                            </ui:SettingsExpander>
+                            <TextBlock Text="使用提示" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Style="{StaticResource Description}" Text="1. 复制文本，切换到目标应用的输入框。&#xA;2. 按下快捷键后松开按键，等待粘贴完成。&#xA;3. 按 Esc 可取消翻译或流式输入；切换到其他窗口也会阻止继续输入。" />
+                            <TextBlock Style="{StaticResource Description}" Margin="0,12,0,0" Text="注意：流式输入中的换行 / Tab 会模拟 Enter / Tab，可能发送消息或切换输入框。请勿在终端、密码框或敏感表单中使用；同一窗口内切换输入框无法可靠检测。已发送的输入无法撤回。" />
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ScrollViewer x:Name="TranslationPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,8,20">
+                            <ui:SettingsCard Header="翻译服务" Description="密钥按服务分别保存，不经过应用中转服务器。">
+                                <ComboBox x:Name="ProviderBox" Width="210" SelectedValuePath="Tag" SelectionChanged="Provider_SelectionChanged">
+                                    <ComboBoxItem Content="DeepL API Free" Tag="DeepLFree" />
+                                    <ComboBoxItem Content="DeepL API Pro" Tag="DeepLPro" />
+                                    <ComboBoxItem Content="Microsoft Translator" Tag="Microsoft" />
+                                    <ComboBoxItem Content="DeepLX · 自定义接口" Tag="DeepLX" />
+                                    <ComboBoxItem Content="AI 翻译 · OpenAI 兼容" Tag="AI" />
+                                </ComboBox>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard x:Name="EndpointCard" Header="DeepLX 接口地址" Description="填写完整翻译 URL；可能含令牌，加密保存且不写日志。" Visibility="Collapsed">
+                                <TextBox x:Name="EndpointBox" Width="300" MaxLength="4096" TextChanged="Endpoint_TextChanged" AutomationProperties.Name="DeepLX 完整接口地址" ToolTip="例如 https://your-host/your-token/translate；仅 localhost 等本机回环地址允许 HTTP。" />
+                            </ui:SettingsCard>
+                            <ui:SettingsExpander x:Name="AISettingsPanel" Header="AI 模型与接口" Description="兼容 Chat Completions；可使用云端或本机模型服务。" IsExpanded="True" Visibility="Collapsed" Margin="0,0,0,5">
+                                <ui:SettingsExpander.Items>
+                                    <ui:SettingsCard Header="Stream · 实时翻译输入" Description="收到译文片段就立即输入；独立翻译快捷键同样生效。断流、拒答或取消后，已输入内容无法撤回。">
+                                        <ui:ToggleSwitch x:Name="AIStreamToggle" IsOn="{Binding AIStreamEnabled, Mode=TwoWay}" OffContent="关闭" OnContent="开启" />
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="API 地址" Description="支持 Base URL 或完整 /chat/completions 地址；加密保存。">
+                                        <PasswordBox x:Name="AIEndpointBox" Width="280" MaxLength="4096" PasswordChanged="AIEndpoint_PasswordChanged" AutomationProperties.Name="AI API 地址" ToolTip="默认 https://api.openai.com/v1/chat/completions；也可填兼容服务的 /v1 Base URL。" />
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="模型 ID" Description="填写服务商提供的准确 ID；不会自动替换模型。">
+                                        <TextBox x:Name="AIModelBox" Width="280" MaxLength="200" Text="{Binding AIModel, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="AI 模型 ID" />
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="额外翻译要求（可选）" Description="例如：使用自然口语；保留产品名称。此项以明文保存，请勿填写密钥。" ContentAlignment="Vertical" HorizontalContentAlignment="Stretch">
+                                        <TextBox MinHeight="65" MaxHeight="100" MaxLength="2000" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding AIInstructions, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="AI 额外翻译要求" />
+                                    </ui:SettingsCard>
+                                </ui:SettingsExpander.Items>
+                            </ui:SettingsExpander>
+                            <ui:SettingsCard x:Name="ApiKeyCard" Header="API Key" Description="使用 Windows DPAPI 加密，仅当前账户可解密。">
+                                <PasswordBox x:Name="ApiKeyBox" Width="210" PasswordChanged="ApiKey_PasswordChanged" AutomationProperties.Name="翻译服务 API Key" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard x:Name="RegionCard" Header="Microsoft 资源区域" Description="区域 / 多服务资源须填写（例如 eastasia）；全局资源可留空。">
+                                <TextBox Width="210" Text="{Binding MicrosoftRegion, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Microsoft 资源区域" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="源语言" Description="默认由翻译服务自动识别。">
+                                <ComboBox x:Name="SourceBox" Width="210" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding SourceLanguage}" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="目标语言" Description="翻译后希望使用的语言。">
+                                <ComboBox x:Name="TargetBox" Width="210" DisplayMemberPath="Name" SelectedValuePath="Code" SelectedValue="{Binding TargetLanguage}" />
+                            </ui:SettingsCard>
+                            <TextBlock Text="连接测试" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="测试将使用当前表单中的配置，发送下方示例文本，可能消耗 API 额度；不会读取剪贴板或执行粘贴。" Style="{StaticResource Description}" Margin="0,0,0,12" />
+                            <TextBox x:Name="TestInput" Text="Hello, welcome to CustomPaste." AcceptsReturn="True" TextWrapping="Wrap" Height="80" MaxLength="1000" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="翻译测试文本" />
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,12">
+                                <Button x:Name="TestButton" Content="测试翻译" Click="TestTranslation_Click" />
+                                <Button x:Name="CancelTestButton" Content="取消测试" Click="CancelTest_Click" IsEnabled="False" Margin="8,0,0,0" />
+                                <Button Content="服务 API 文档 ↗" Click="ProviderDocs_Click" Margin="8,0,0,0" />
+                            </StackPanel>
+                            <TextBox x:Name="TestOutput" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" MaxHeight="170" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="翻译测试结果" />
+                            <TextBlock x:Name="ProviderHint" Style="{StaticResource Description}" Margin="0,18,0,0" />
+                            <TextBlock Text="隐私提醒：只有执行翻译时，文本才会直接发送给所选服务商。纯文本粘贴及未启用翻译的流式输入完全在本地运行。" Style="{StaticResource Description}" Margin="0,12,0,0" />
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ScrollViewer x:Name="HotkeysPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,8,20">
+                            <TextBlock Text="点击快捷键框，直接按下你想使用的按键组合。留空表示不注册；保存时会检测重复与占用，失败时保留原有快捷键。" Style="{StaticResource Description}" Margin="0,0,0,20" />
+                            <ui:SettingsCard Header="自定义粘贴" Description="按照首页的工作流设置执行；默认 Ctrl + Shift + V。">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="CustomKeyBox" Style="{StaticResource HotkeyBox}" Text="{Binding CustomHotkey, Mode=TwoWay}" AutomationProperties.Name="自定义粘贴快捷键" />
+                                    <Button Content="清除" Tag="CustomKeyBox" Click="ClearHotkey_Click" Margin="6,0,0,0" />
+                                </StackPanel>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="仅翻译粘贴" Description="使用所选翻译服务；AI 可启用实时输入。">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="TranslateKeyBox" Style="{StaticResource HotkeyBox}" Text="{Binding TranslateHotkey, Mode=TwoWay}" AutomationProperties.Name="翻译粘贴快捷键" />
+                                    <Button Content="清除" Tag="TranslateKeyBox" Click="ClearHotkey_Click" Margin="6,0,0,0" />
+                                </StackPanel>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="仅流式输入" Description="输入原始文本，不翻译；默认不设快捷键。">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="StreamKeyBox" Style="{StaticResource HotkeyBox}" Text="{Binding StreamHotkey, Mode=TwoWay}" AutomationProperties.Name="流式输入快捷键" />
+                                    <Button Content="清除" Tag="StreamKeyBox" Click="ClearHotkey_Click" Margin="6,0,0,0" />
+                                </StackPanel>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="纯文本粘贴" Description="去除富文本格式，直接粘贴原始文字。">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="PlainKeyBox" Style="{StaticResource HotkeyBox}" Text="{Binding PlainHotkey, Mode=TwoWay}" AutomationProperties.Name="纯文本粘贴快捷键" />
+                                    <Button Content="清除" Tag="PlainKeyBox" Click="ClearHotkey_Click" Margin="6,0,0,0" />
+                                </StackPanel>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="取消当前任务" Description="可绑定全局组合键；留空不注册。任务期间 Esc 始终可用。">
+<StackPanel Orientation="Horizontal"><TextBox x:Name="CancelKeyBox" Style="{StaticResource HotkeyBox}" Text="{Binding CancelHotkey, Mode=TwoWay}" AutomationProperties.Name="取消当前任务快捷键" /><Button Content="清除" Tag="CancelKeyBox" Click="ClearHotkey_Click" Margin="6,0,0,0" /></StackPanel>
+</ui:SettingsCard>
+                            <Button Content="恢复默认快捷键" Click="ResetHotkeys_Click" HorizontalAlignment="Left" Margin="0,16,0,0" />
+                            <TextBlock Style="{StaticResource Description}" Text="Windows 安全限制：普通权限程序无法向管理员权限窗口模拟输入。快捷键可能被其他应用或系统保留；本应用不会主动提升权限。" Margin="0,20,0,0" />
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Grid x:Name="HistoryPanel" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ui:SettingsCard Header="记录粘贴历史" Description="默认开启；关闭后自动保存并清空已有记录（需确认）。">
+                            <ui:ToggleSwitch x:Name="HistoryToggle" IsOn="{Binding HistoryEnabled, Mode=TwoWay}" />
+                        </ui:SettingsCard>
+                        <Grid Grid.Row="1" Margin="0,12,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="HistorySearch" TextChanged="HistorySearch_TextChanged" ToolTip="搜索已粘贴的文本或模式" AutomationProperties.Name="搜索历史" Margin="0,0,12,0" />
+                            <Button Grid.Column="1" Content="清空历史" Click="ClearHistory_Click" />
+                        </Grid>
+                        <ListBox x:Name="HistoryList" Grid.Row="2" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="8,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Mode}" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding TimeLabel}" Margin="14,0,0,0" Style="{StaticResource Description}" />
+                                                <TextBlock Text="{Binding LengthLabel}" Margin="12,0,0,0" Style="{StaticResource Description}" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Preview}" TextTrimming="CharacterEllipsis" Margin="0,7,12,0" MaxHeight="24" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="查看" Click="ViewHistory_Click" Padding="8,4" />
+                                            <Button Content="复制" Click="CopyHistory_Click" Padding="8,4" Margin="5,0" />
+                                            <Button Content="删除" Click="DeleteHistory_Click" Padding="8,4" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="HistoryEmpty" Grid.Row="2" Text="还没有粘贴记录&#xA;在其他应用中使用快捷键后，记录会出现在这里。" Style="{StaticResource Description}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                        <StackPanel Grid.Row="3" Margin="0,12,0,0">
+                            <TextBlock x:Name="HistoryCount" Style="{StaticResource Description}" />
+                            <TextBlock Text="只保存本应用已发送的最终文本，不监听系统剪贴板；本地记录使用 DPAPI 加密。" Style="{StaticResource Description}" FontSize="12" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="LogsPanel" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="LogLevel" SelectedIndex="0" SelectionChanged="LogFilter_Changed">
+                                <ComboBoxItem Content="全部级别" />
+                                <ComboBoxItem Content="INFO" />
+                                <ComboBoxItem Content="WARN" />
+                                <ComboBoxItem Content="ERROR" />
+                            </ComboBox>
+                            <TextBox x:Name="LogSearch" Grid.Column="1" Margin="8,0" TextChanged="LogSearch_TextChanged" AutomationProperties.Name="搜索日志" />
+                            <Button Grid.Column="2" Content="打开日志目录" Click="OpenLogs_Click" />
+                        </Grid>
+                        <DataGrid x:Name="LogGrid" Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="None" HeadersVisibility="Column" RowHeaderWidth="0" SelectionMode="Single" EnableRowVirtualization="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="时间" Binding="{Binding TimeLabel}" Width="78" />
+                                <DataGridTextColumn Header="级别" Binding="{Binding Level}" Width="65" />
+                                <DataGridTextColumn Header="事件" Binding="{Binding Event}" Width="120" />
+                                <DataGridTextColumn Header="详情" Binding="{Binding Message}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextWrapping" Value="Wrap" />
+                                            <Setter Property="Padding" Value="4,8" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Grid.Row="2" Text="显示本次运行最近 500 条；磁盘日志保留 7 天、每天最多约 4 MB。日志不包含正文或密钥。" Style="{StaticResource Description}" Margin="0,14,0,0" FontSize="12" />
+                    </Grid>
+                    <ScrollViewer x:Name="AppearancePanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,8,20">
+                            <ui:SettingsExpander Header="外观与个性化" Description="使用 iNKORE Modern 的 Fluent 主题。" IsExpanded="True">
+                                <ui:SettingsExpander.Items>
+                                    <ui:SettingsCard Header="应用主题" Description="浅色、深色或跟随 Windows。">
+                                        <ComboBox Width="180" SelectedValuePath="Tag" SelectedValue="{Binding Theme}">
+                                            <ComboBoxItem Content="跟随系统" Tag="System" />
+                                            <ComboBoxItem Content="浅色" Tag="Light" />
+                                            <ComboBoxItem Content="深色" Tag="Dark" />
+                                        </ComboBox>
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="窗口材质" Description="Mica / Tabbed 需受支持的 Windows 11；旧系统自动回退。">
+                                        <ComboBox Width="180" SelectedValuePath="Tag" SelectedValue="{Binding Backdrop}">
+                                            <ComboBoxItem Content="Mica · 云母" Tag="Mica" />
+                                            <ComboBoxItem Content="Tabbed · 标签页" Tag="Tabbed" />
+                                            <ComboBoxItem Content="纯色" Tag="None" />
+                                        </ComboBox>
+                                    </ui:SettingsCard>
+                                    <ui:SettingsCard Header="强调色">
+                                        <ComboBox Width="180" SelectedValuePath="Tag" SelectedValue="{Binding Accent}">
+                                            <ComboBoxItem Content="跟随系统" Tag="System" />
+                                            <ComboBoxItem Content="鸢尾蓝" Tag="#5267DF" />
+                                            <ComboBoxItem Content="松石绿" Tag="#008577" />
+                                            <ComboBoxItem Content="莓果紫" Tag="#AA477B" />
+                                            <ComboBoxItem Content="琥珀橙" Tag="#C66A21" />
+                                        </ComboBox>
+                                    </ui:SettingsCard>
+                                </ui:SettingsExpander.Items>
+                            </ui:SettingsExpander>
+                            <TextBlock Text="通用" Style="{StaticResource SectionTitle}" />
+                            <ui:SettingsCard Header="托盘提醒" Description="发生失败、取消或需要操作时显示系统气泡。">
+                                <ui:ToggleSwitch IsOn="{Binding NotificationsEnabled, Mode=TwoWay}" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="历史记录上限" Description="仅保留最近的记录，最多 1000 条。">
+                                <TextBox Width="100" Text="{Binding HistoryLimit, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" AutomationProperties.Name="历史记录上限" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="本地数据" Description="设置、加密历史记录和诊断日志均保存在当前账户。">
+                                <Button Content="打开目录" Click="OpenData_Click" />
+                            </ui:SettingsCard>
+                            <TextBlock Text="关于 CustomPaste" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="轻量的 Windows 自定义粘贴工具，基于 .NET 8 / WPF / iNKORE.UI.WPF.Modern。&#xA;不主动收集遥测，不轮询剪贴板，退出时释放快捷键和托盘资源。" Style="{StaticResource Description}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+                <Border Grid.Row="2" Margin="0,14,0,0" Padding="12,10" CornerRadius="6" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock x:Name="RuntimeStatus" Text="准备就绪" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock x:Name="Feedback" Text="设置自动保存；输入停顿 0.5 秒后生效。" FontSize="12" Style="{StaticResource Description}" Margin="0,3,8,0" AutomationProperties.LiveSetting="Polite" />
+                        </StackPanel>
+                        <Button x:Name="CancelPasteButton" Grid.Column="1" Content="取消任务" Click="CancelPaste_Click" IsEnabled="False" VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
