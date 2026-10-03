@@ -243,3 +243,6 @@ dotnet run --project CustomPaste.Tests/CustomPaste.Tests.csproj -c Release -- --
 ## 许可证
 
 本项目采用自定义 **NON-COMMERCIAL & SHARE-ALIKE LICENSE**，并非 MIT、Apache 或标准 Creative Commons 许可证。使用、修改和分发前请阅读 [LICENSE](LICENSE)，具体授权条件以原文为准；请保留版权与许可证文本。
+
+# 感谢
+感谢 [linux.do](https://linux.do/) 社区的宣传
